@@ -1,6 +1,153 @@
 ---
-title: Lección 2 - 
+title: Lección 2 - Chunks de código
 output: html_document
 ---
 
 
+### Bloques de código
+
+El código de R que va a leer datos, analizarlos y generar figuras, tablas o números se organiza en bloques (o `chunks`) delimitados por tres acentos graves (```` ``` ````) y se diferencia del resto de archivo con un fondo gris.
+Todo lo que incluyas entre estos delimitadores será interpretado por R como código e intentará ejecutarlo al *knitear* el archivo.
+Cualquier resultado del código (gráficos, tablas, texto, etc...) será insertado en el documento final en el mismo orden que están en el archivo R Markdown.
+
+
+Para insertar un nuevo chunk podés:
+
+-   Usar el botón **Insert**
+-   El atajo de teclado Ctrl+Alt+I
+-   Escribir a mano!
+
+
+El código en cada bloque se ejecuta como si fuera ejecutado en la terminal y todo resultado se muestra en el documento (ya vamos a ver formas de controlar esto).
+
+Por ejemplo, este bloque de código
+
+    ```{r sumar}`r ''`
+    1 + 1
+    ```
+
+va a insertar esto en el documento de salida:
+
+    [1] 2
+
+
+> Es muy importante no romper los límites de los bloques.
+Un problema común es accidentalmente eliminar un acento grave al final de un bloque de código y que luego el documento no knitee correctamente.
+Si al knitear te sale un error como "attempt to use zero-length variable name", revisá bien que todos tus bloques de código estén correctamente definidos.
+
+
+Los bloques pueden tener nombre, lo cual es útil para identificar donde ocurren los errores al momento de *knitear* pero también para tener una pista de lo que hace el código que incluye.
+
+Si bien el código se corre cuando uno knitea, cuando estés escribiendo un informe es muy cómodo ir corriendo bloques individuales interactivamente como si fuera en la consola.
+
+Para correr una línea de código, tendrás que pararte sobre esa línea y apretar:
+
+
+> Ctrl+Enter
+
+
+Pero también podés correr el código de todo el chunk con:
+
+
+> Ctrl+Shift+Enter
+
+
+Los resultados van a aparecer inmediatamente debajo del bloque.
+
+
+> Desafío: Sumá un chunk a tu archivo
+
+Usando el archivo con el que venís trabajando insertá un nuevo chunk y:
+
+1.  Cargá el paquete readr.
+2.  Creá una variable que se llame `variable_prueba` y asignale un valor.
+3.  Mostrá ese valor.
+4.  Volvé a *knitear* el archivo para ver el resultado
+
+
+Finalmente, es posible que te encuentres mencionando resultados en el texto, por ejemplo algo así como "el porcentaje de ocupación para el mes de enero fue del 95%".
+Y también es posible que ese valor cambie si utilizas una base de datos distinta o si luego generas un informe pero para un mes siguiente.
+Las chances de de que te olvides de actualizar ese "95" son super altas, por eso R Markdown también tiene la posibilidad de incorporar código en línea con el texto.
+
+Si tenés una una variable `ocupacion` que vale "95%":
+
+```{r}
+ocupacion <- "95%"
+```
+
+Para mencionarla en el texto entonces escribirías:
+
+> El porcentaje de ocupación para el mes de enero fue del `` ``r "r"` ocupacion` ``.
+ 
+y el resultado en el documento kniteado sería 
+
+> El porcentaje de ocupación para el mes de enero fue del `r ocupacion`.
+
+
+prueba: `` `r ocupacion` ``
+
+## Control de chunks
+
+
+Ponerle nombre al chunk no es obligatorio pero está bueno para tener una idea de qué hace cada uno, lo cual se vuelve más importante a medida que un reporte se vuelve más largo y complejo. Pero lo que no dijimos es que además del nombre, entre las llave se pueden poner un montón de opciones que cambian el comportamiento y la apariencia del resultado del chunk. 
+
+Para cambiar las opciones de un chunk, lo único que hay que hacer es listarlas dentro de los corchetes. Por ejemplo:
+
+
+    `r chunk`{r nombre-del-chunk, echo = FALSE, message = FALSE}
+    
+    `r chunk`
+    
+
+
+Hay una serie de opciones particularmente importante es la que controla si el código se ejecuta y si el resultado del código se va a mostrar en el reporte o no:
+
+
+* `eval = FALSE` evita que se ejecute el código del chunk, de manera que tampoco va a mostrar resultados. Es útil para mostrar códigos de ejemplo si estás escribiendo, por ejemplo un documento para enseñar R.
+
+
+* `echo = FALSE` ejecuta el código del chunk y muestra los resultados, pero oculta el código en el reporte. Esto es útil para escribir reportes para personas que no necesitan ver el código de R que generó el gráfico o tabla que querés mostrar. 
+
+* `include = FALSE` corre el código pero oculta tanto el código como los resultados. Es útil para usar en chunks de configuración general donde, por ejemplo, cargas las librerías. 
+
+
+Si estás escribiendo un informe en el que no querés que se muestre ningún código, agregarle `echo = FALSE` a cada chunk nuevo se vuelve tedioso. 
+La solución es cambiar la opción de forma global de manera que aplique a todos los chunks. 
+Esto se hace mediante la función `knitr::opts_chunk$set()`, que setea las opciones globales de los chunks que le siguen. 
+Si querés que todos los chunks tengan `echo = TRUE` crearías un chunk así:
+
+
+    `r chunk`{r setup, include = FALSE}
+    knitr::opts_chunk$set(echo = TRUE)
+    `r chunk`
+    
+Generalmente tiene sentido poner esto en el primer chunk de un documento, que como suele ser cuestiones de configuración del reporte, también conviene ponerle `include = FALSE`.
+
+Habrás visto que a veces algunas funciones devuelven mensajes sobre lo que hacen. 
+Por ejemplo, cuando `read_csv` lee un archivo describe el tipo de dato de cada columna:
+
+```{r}
+parques <- read_csv("datos/parques.csv")
+```
+
+Esto es útil cuando uno está haciendo trabajo interactivo pero en general no quiere que quede en el reporte. Para que no muestre estos mensajes basta con poner la opción `message = FALSE`
+
+    `r chunk`{r message = FALSE}
+    paises <- read_csv("datos/paises.csv")
+    `r chunk`
+    
+En general no pasa nada si ignorás los mensajes. 
+Son cuestiones diagnósticas extras que sirven para que vos, como humano, te enteres de lo que hizo una función. Distinto son las advertencias, o "warnings".
+Una advertencia te está diciendo que hay algo "raro" en el código que puede significar que hay algo mal. 
+No llega al nivel de error, que es algo que literalmente "no computa". 
+Por ejemplo, `sqrt` tira una advertencia cuando recibe números negativos.
+
+```{r}
+i <- sqrt(-1)
+```
+
+Si un chunk tira una advertencia que es esperable pero no querés que aparezca en el reporte, podés ocultarlas con la opción `warning = FALSE`.
+
+    `r chunk`{r warning = FALSE}
+    i <- sqrt(-1)
+    `r chunk`

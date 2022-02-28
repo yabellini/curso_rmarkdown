@@ -3,13 +3,13 @@ navbar:
   left: 
      - text: Temas
        menu: 
-        - text: Lección 1 - 
+        - text: Lección 1 - Introducción a rmarkdown 
           href: 01-Leccion1.html
-        - text: Lección 2 - 
+        - text: Lección 2 - Chunks de código
           href: 02-Leccion2.html
-        - text: Lección 3 - 
+        - text: Lección 3 - Encabezado y formatos de salidas 
           href: 03-Leccion3.html
-        - text: Lección 4 -
+        - text: Lección 4 - Reportes con parámetros
           href: 04-Leccion4.html
   right:
     - text: Repo

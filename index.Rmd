@@ -32,9 +32,7 @@ Introducir a las personas que asistan a RMarkdown para realizar informes.
 
 ## Mapa conceptual del taller completo
 
-
-{{< figure src="img/ConcepMapFull_es.png" >}}
-
+![](img/ConcepMapFull_es.png)
 
 ## Requisitos previos
 

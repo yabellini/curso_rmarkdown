@@ -1,5 +1,5 @@
 ---
-title: Lección 3 - 
+title: Lección 3 - Encabezado y formatos de salidas
 output: html_document
 ---
 
