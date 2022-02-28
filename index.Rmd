@@ -30,6 +30,11 @@ Introducir a las personas que asistan a RMarkdown para realizar informes.
 
 6. Parametrización
 
+## Mapa conceptual del taller completo
+
+
+{{< figure src="img/ConcepMapFull_es.png" >}}
+
 
 ## Requisitos previos
 
@@ -39,7 +44,15 @@ Asumimos que tenes instalado R y RStudio, si no es así [seguí estas intruccion
 
 ### Paquetes
 
-Instala el paquete {rmarkdown}.
+Instalar los paquetes {rmarkdown} y {knitr}.
+
+```{r eval=FALSE}
+
+install.packages("rmarkdown")
+install.packages("knitr")
+
+```
+
 
 ## ¿Quién soy? 
 
@@ -61,14 +74,6 @@ Todo el material de este curso está bajo la licencia <a rel="license" href="htt
 El código fuente de estos materiales y la página web pueden encontrarse en https://github.com/yabellini/GEE_course_code.
 
 
-### Cómo citar este trabajo
-
-![](https://zenodo.org/badge/DOI/10.5281/zenodo.5851443.svg)
-
-Puedes citar este recurso como:
-
-> Yanina Bellini Saibene. (2022). yabellini/GEE_course_code: Google Earth Engine desde cero (v1.1). Zenodo. https://doi.org/10.5281/zenodo.5851443
-
 ## ¿Dónde se dictó este taller?
 
-Este taller ya se dictó en el marco de PampaSeg 2019
+Este taller ya se dictó en el marco de PampaSeg 2019 y R-Ladies Santa Rosa meetup.
