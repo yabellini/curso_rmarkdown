@@ -1,0 +1,23 @@
+navbar:
+  title: "Taller de Rmarkdown"
+  left: 
+     - text: Temas
+       menu: 
+        - text: Lección 1 - 
+          href: 01-Leccion1.html
+        - text: Lección 2 - 
+          href: 02-Leccion2.html
+        - text: Lección 3 - 
+          href: 03-Leccion3.html
+        - text: Lección 4 -
+          href: 04-Leccion4.html
+  right:
+    - text: Repo
+      href: https://github.com/yabellini/curso_rmarkdown
+output_dir: "docs"
+output:
+  html_document:
+    toc: true
+    toc_float: true
+    theme: flatly
+    
