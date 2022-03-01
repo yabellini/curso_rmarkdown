@@ -356,7 +356,74 @@ div.tocify {
 </div>
 
 
-
+<div id="encabezado" class="section level3">
+<h3>Encabezado</h3>
+<p>El encabezado es una serie de instrucciones organizadas entre tres guiones (<code>---</code>) que determinan las propiedades globales del documento, como el título, el formato de salida, información de autoría, etc… También ahí se pueden cambiar opciones asociadas al formato de salida, como el estilo de la tabla de contenidos o índice.</p>
+<p>Éstas propiedades se definen en un formato llamado <a href="https://es.wikipedia.org/wiki/YAML">YAML</a>, el cual permite definir listas jerarquizadas de una forma humanamente legible. Por ejemplo:</p>
+<pre class="yaml"><code>---
+title: &quot;Mi primer RMarkdown&quot;
+output: 
+  html_document:
+    code_download: true
+    toc: true
+    toc_float: false
+---</code></pre>
+<p>define dos variables principales, “title” y “output”. “Output” a su vez contiene un elemento “htm_document”, el cual contiene tres elementos: “code_download”, “toc” y “toc_float”.</p>
+<blockquote>
+<p>Es muy importante mantener el escalonado, o <em>identación</em> de los elementos, ya que ésta define la jerarquía de cada elemento. Muchos de los errores a la hora de knitear ocurren porque el archivo tiene problemas en la identación del encabezado.</p>
+</blockquote>
+</div>
+<div id="formato-de-salida" class="section level3">
+<h3>Formato de salida</h3>
+<p>Durante este curso fuiste creando varios documentos con R Markdown en HTML. Este es un formato que tiene un montón de flexibilidad, pero seguramente no es el único que necesitás. Casi seguro que los informes los tengas que presentar en formato PDF o, incluso, ¡en papel impreso! RMarkdown, y todo un amplio ecosistema de otros paquetes, permite generar documentos en múltiples formatos usando el mismo archivo de texto plano.</p>
+</div>
+<div id="eligiendo-el-formato-de-salida" class="section level2">
+<h2>Eligiendo el formato de salida</h2>
+<p>Ya habrás visto esto cuando creás un archivo markdown nuevo, RStudio te permite elegir entre tres formatos de salida:</p>
+<p><img src="img/crear_rmd.png" /></p>
+<p>Cuál es el formato de salida de un archivo de R Markdown se determina principalmente con la opción <code>output</code> en el encabezado yaml. Si mirás el encabezado del <a href="files/mi-primer-rmarkdown.Rmd">archivo R Markdown de ejemplo</a> vas a ver que la opción <code>output</code> dice <code>html_document</code>.</p>
+<p>Ese <code>html_document</code> no es otra cosa que una función de rmarkdown llamada <code>html_document</code>. Como te podrás imaginar, rmarkdown tiene una serie de otras funciones que definen formatos de salida. Los dos que seguramente te van a servir más son <code>pdf_document</code> y <code>word_document</code> que justamente generan PDFs y archivos de Word, respectivamente.</p>
+<p>Para crear un documento de R Markdown que genere un archivo PDF basta con cambiar el <code>output</code> en el encabezado por esto:</p>
+<pre class="yaml"><code>---
+output: pdf_document
+---</code></pre>
+<p>Para que el documento se genere correctamente hace falta instalar LaTeX, que es un sistema de composición de textos. Aunque parezca mentira, la mejor forma de instalar LaTeX para usar R Markdown es instalando el paquete {<a href="https://yihui.org/tinytex/">tinytex</a>} con <code>install.packages("tinytex")</code> y luego correr <code>tinytex::install_tinytex()</code>. Esto va a instalar una versión pequeña de LaTeX en un lugar donde luego rmarkdown lo puede usar. Esta es la forma altamente recomendada para generar PDFs con R Markdown que va a evitarte un montón de dolores de cabeza.</p>
+<p>Análogamente, podés generar un archivo de word cambiando el <code>output</code> así:</p>
+<pre class="yaml"><code>---
+output: word_document
+---</code></pre>
+<p>Y ya está. En la gran mayoría de los casos no vas a tener que modificar nada más del código ni el texto.</p>
+<blockquote>
+<p>Agarrá el reporte que estuviste armando en los desafíos o alguno que usaste durante el curso y compilalo en PDF y luego en Word.</p>
+</blockquote>
+</div>
+<div id="personalizando-la-salida" class="section level2">
+<h2>Personalizando la salida</h2>
+<p>Cada función de formato viene con sus opciones de personalización que podés acceder leyendo su documentación. Para ver la documentación de <code>html_document</code>, usa este comando:</p>
+<pre class="r"><code>?rmarkdown::html_document</code></pre>
+<pre><code>## starting httpd help server ... done</code></pre>
+<p>Vas a ver que tiene un montón de argumentos que modifican la salida. La forma de setear estos argumentos en un documento de R Markdown es, de nuevo, en el encabezado. Cada argumento de la función de salida (<code>html_document</code> en este caso) es un elemento debajo de la función de output.</p>
+<p>Por ejemplo, para que un documento de html tenga una tabla de contenidos hay que setear el argumento <code>toc</code> (de <strong>t</strong>able <strong>o</strong>f <strong>c</strong>ontents) a <code>TRUE</code>. En el encabezado, esto queda así:</p>
+<pre class="yaml"><code>---
+output: 
+  html_document:
+    toc: TRUE
+---</code></pre>
+<p>Conviene mirar eso con un poco de detenimiento porque requiere “traducir” código de R –cual los argumentos de una función se fijan entre paréntesis y con <code>=</code>– en código de yaml –donde los argumentos de la función son una lista cuyos elementos se definen con <code>:</code>.</p>
+<p>En R lo que vemos como <code>html_document(toc = TRUE)</code> se traduce a yaml como</p>
+<pre class="yaml"><code>html_document:
+  toc: TRUE</code></pre>
+<p>Si vas a la ayuda de <code>pdf_document</code> vas a ver que también tiene un argumento llamado <code>toc</code>. Algunos argumentos son compartidos, lo cual hace que se aún más fácil generar un mismo reporte en muchos formatos haciendo muy pocos cambios.</p>
+<p>Una forma rápida de hacer tus informes más vistosos es cambiarle el tema visual. <code>html_document</code> permite elegir entre una serie de temas usando el argumento <code>theme</code>. Por ejemplo, poniendo esto en el encabezado, generás un documento HTML con un fondo oscuro</p>
+<pre class="yaml"><code>output: 
+  html_document:
+    toc: TRUE
+    theme: darkly</code></pre>
+<div class="alert alert-info">
+<p><strong>Desafío</strong></p>
+<p>Andá a la ayuda de <code>html_document</code> y fijate cuáles son los valores válidos para el argumento <code>theme</code>. ¡Probá algunos!</p>
+</div>
+</div>
 
 
 

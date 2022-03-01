@@ -4,27 +4,184 @@ output: html_document
 ---
 
 
-### Encabezado
+## Reportes parametrizados
 
-El encabezado es una serie de instrucciones organizadas entre tres guiones (`---`) que determinan las propiedades globales del documento, como el título, el formato de salida, información de autoría, etc... También ahí se pueden cambiar opciones asociadas al formato de salida, como el estilo de la tabla de contenidos o índice.
+Es muy común tener que hacer un reporte cuyo resultado dependa de ciertos parámetros. 
 
-Éstas propiedades se definen en un formato llamado [YAML](https://es.wikipedia.org/wiki/YAML), el cual permite definir listas jerarquizadas de una forma humanamente legible.
-Por ejemplo:
+Por ejemplo, podrías tener un reporte que analiza la evolución de visitantes en parques nacionales en una determinada región de Argentina con el siguiente código:
 
-``` {.yaml}
----
-title: "Mi primer RMarkdown"
-output: 
-  html_document:
-    code_download: true
-    toc: true
-    toc_float: false
----
+```{r, message=FALSE}
+library(readr)
+library(dplyr)
+library(ggplot2)
+
+parques <- read_csv("datos/parques_tidy.csv")
+
+parques %>% 
+  filter(region == "norte") %>% 
+  ggplot(aes(indice_tiempo, total)) +
+  geom_line()
 ```
 
-define dos variables principales, "title" y "output".
-"Output" a su vez contiene un elemento "htm_document", el cual contiene tres elementos: "code_download", "toc" y "toc_float".
+Si ahora querés hacer el mismo reporte pero para la región de Patagonia, tenés que abrir el archivo y modificar la llamada a `filter` para quedarte sólo con esa región:
 
-> Es muy importante mantener el escalonado, o *identación* de los elementos, ya que ésta define la jerarquía de cada elemento.
-Muchos de los errores a la hora de knitear ocurren porque el archivo tiene problemas en la identación del encabezado.
+```{r, eval = FALSE}
+library(readr)
+library(dplyr)
+library(ggplot2)
 
+parques <- read_csv("datos/parques_tidy.csv")
+
+parques %>% 
+  filter(region == "patagonia") %>% 
+  ggplot(aes(indice_tiempo, total)) +
+  geom_line()
+```
+
+Si el reporte es largo y usa el nombre de la región en múltiples lugares cambiar "norte" por "patagonia" puede ser tedioso y propenso a error, ya que te obliga a modificar muchas partes del código. Y si después tenés que hacer el mismo reporte para "cordoba"... 
+
+En estas situaciones podés crear un reporte parametrizado. 
+La idea es que el reporte tiene una serie de parámetros que puede modificar la salida. 
+Es como si el archivo de R Markdown fuera una gran función con sus argumentos!
+
+Para generar un reporte parametrizado hay que agregar un elemento llamado `params` al encabezado con la lista de parámetros y sus valores por default.
+
+
+```yaml
+params:
+  region: norte
+```
+
+```{r, include=FALSE}
+params <- list(region = "norte")
+```
+
+Luego, en el código de R vas a tener acceso a una variable llamada `params` que es una lista que contiene los parámetros y su valor. Para acceder al valor de cada parámetros se usa el operador `$` de la siguiente manera:
+
+```{r}
+params$region
+```
+De esta manera, el código original se puede modificar para usar el valor de la región almacenado en `params$region`
+
+```{r, eval = FALSE}
+library(readr)
+library(dplyr)
+library(ggplot2)
+
+parques <- read_csv("datos/parques_tidy.csv")
+
+parques %>% 
+  filter(region == params$region) %>% 
+  ggplot(aes(indice_tiempo, total)) +
+  geom_line()
+
+```
+
+
+Y ahora el mismo código puede funcionar para distintas regiones.
+Para crear reportes distintos para cada región sólo hay que modificar el valor del parámetro en el encabezado:
+
+
+```yaml
+params:
+  pais: patagonia
+```
+
+
+::: {.alert .alert-info}
+**Desafío**
+
+Agregá al menos un parámetro al reporte que venís armando. 
+:::
+
+
+## Control de chunks
+
+En la sección [Introducción a R Markdown](introducción-a-rmarkdown.html) vimos que un chunk tiene una pinta como esta:
+
+    `r chunk`{r nombre-del-chunk}
+    
+    `r chunk`
+    
+
+Ponerle nombre al chunk no es obligatorio pero está bueno para tener una idea de qué hace cada uno, lo cual se vuelve más importante a medida que un reporte se vuelve más largo y complejo. Pero lo que no dijimos es que además del nombre, entre las llave se pueden poner un montón de opciones que cambian el comportamiento y la apariencia del resultado del chunk. 
+
+Para cambiar las opciones de un chunk, lo único que hay que hacer es listarlas dentro de los corchetes. Por ejemplo:
+
+
+    `r chunk`{r nombre-del-chunk, echo = FALSE, message = FALSE}
+    
+    `r chunk`
+    
+
+
+Hay una serie de opciones particularmente importante es la que controla si el código se ejecuta y si el resultado del código se va a mostrar en el reporte o no:
+
+
+* `eval = FALSE` evita que se ejecute el código del chunk, de manera que tampoco va a mostrar resultados. Es útil para mostrar códigos de ejemplo si estás escribiendo, por ejemplo un documento para enseñar R.
+
+
+* `echo = FALSE` ejecuta el código del chunk y muestra los resultados, pero oculta el código en el reporte. Esto es útil para escribir reportes para personas que no necesitan ver el código de R que generó el gráfico o tabla que querés mostrar. 
+
+* `include = FALSE` corre el código pero oculta tanto el código como los resultados. Es útil para usar en chunks de configuración general donde, por ejemplo, cargas las librerías. 
+
+
+Si estás escribiendo un informe en el que no querés que se muestre ningún código, agregarle `echo = FALSE` a cada chunk nuevo se vuelve tedioso. 
+La solución es cambiar la opción de forma global de manera que aplique a todos los chunks. 
+Esto se hace mediante la función `knitr::opts_chunk$set()`, que setea las opciones globales de los chunks que le siguen. 
+Si querés que todos los chunks tengan `echo = TRUE` crearías un chunk así:
+
+
+    `r chunk`{r setup, include = FALSE}
+    knitr::opts_chunk$set(echo = TRUE)
+    `r chunk`
+    
+Generalmente tiene sentido poner esto en el primer chunk de un documento, que como suele ser cuestiones de configuración del reporte, también conviene ponerle `include = FALSE`.
+
+Habrás visto que a veces algunas funciones devuelven mensajes sobre lo que hacen. 
+Por ejemplo, cuando `read_csv` lee un archivo describe el tipo de dato de cada columna:
+
+```{r}
+parques <- read_csv("datos/parques.csv")
+```
+
+Esto es útil cuando uno está haciendo trabajo interactivo pero en general no quiere que quede en el reporte. Para que no muestre estos mensajes basta con poner la opción `message = FALSE`
+
+    `r chunk`{r message = FALSE}
+    paises <- read_csv("datos/paises.csv")
+    `r chunk`
+    
+En general no pasa nada si ignorás los mensajes. 
+Son cuestiones diagnósticas extras que sirven para que vos, como humano, te enteres de lo que hizo una función. Distinto son las advertencias, o "warnings".
+Una advertencia te está diciendo que hay algo "raro" en el código que puede significar que hay algo mal. 
+No llega al nivel de error, que es algo que literalmente "no computa". 
+Por ejemplo, `sqrt` tira una advertencia cuando recibe números negativos.
+
+```{r}
+i <- sqrt(-1)
+```
+
+Si un chunk tira una advertencia que es esperable pero no querés que aparezca en el reporte, podés ocultarlas con la opción `warning = FALSE`.
+
+    `r chunk`{r warning = FALSE}
+    i <- sqrt(-1)
+    `r chunk`
+    
+
+Finalmente, una opción tan poderosa como peligrosa es `cache = TRUE`. 
+Lo que hace es que en vez de correr el código de un chunk cada vez que *kniteás* el documento, guarda el resultado del chunk en el disco para reutilizar la próxima vez que crees el reporte. 
+Esto es muy cómo si en chunk tiene un código que tarda mucho en correr. 
+Por ejemplo el siguiente chunk va a tardar 10 minutos en correr la primera vez que knitees el reporte, pero luego va a ser mucho más rápido: 
+
+
+    `r chunk`{r cache = FALSE}
+    datos <- funcion_que_tarda_10_minutos(x)
+    `r chunk`
+
+
+knitr es bastante inteligente y va a invalidar la cache si cambiás el código del chunk. 
+Pero, ¿qué pasa si cambiás algo del código previo que cambia el valor de `x` o incluso el funcionamiento de `function_que_targa_10_minutos`? 
+Es posible que knitr no se de cuenta y use la cache, con el resultado de que `datos` va a tener un valor incorrecto. 
+Hay formas de decirle a knitr de qué depende cada chunk y así obtener una cache más "inteligente" pero es algo que se vuelve complicado muy rápido. 
+
+En resumen, es bueno usar la cache pero sólo cuando es imprescindible.

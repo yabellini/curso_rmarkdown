@@ -3,6 +3,9 @@ title: Lección 2 - Chunks de código
 output: html_document
 ---
 
+```{r, include=FALSE}
+chunk <- "```"
+```
 
 ### Bloques de código
 
