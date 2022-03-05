@@ -20,4 +20,5 @@ output:
     toc: true
     toc_float: true
     theme: flatly
+    css: rladies_2.css
     

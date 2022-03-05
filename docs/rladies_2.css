@@ -1,0 +1,167 @@
+/*****************/
+/*Elementos principales */
+/*****************/
+body {
+  font-family: Arial, Helvetica, sans-serif;
+  font-size: 14;
+}
+
+em {
+    color: purple;
+}
+
+h1, h2 {
+  color: purple;
+/*  background-color: #ffffff; */  /* esto no queda bien con el padding */
+  padding: .5em;
+}
+
+h3, h4, h5{
+  color: purple;
+}
+
+a {
+    color: purple;
+    text-decoration: none;
+}
+
+.ace-tm {
+    background-color: #ffffff;
+    color: black;
+}
+
+
+/***********************/
+/* tabla de contenidos */
+/***********************/
+.topicsList {
+  padding: .5em;
+}
+
+.topicsHeader {
+  background-color: #ffffff;
+  color: purple;
+  padding: .5em;
+}
+
+.topicsList #doc-metadata {
+  background-color: #ffffff;
+  color: purple;
+  padding: .5em;
+}
+
+.topicsList .topic.current {
+  background-color: #ffffff;
+  color: purple;
+}
+
+.topicsList .topic:hover, .topicsList .topic:active {
+  background-color: #ffffff;
+  color: purple;
+}
+
+/***********/
+/* Botones */
+/***********/
+
+.btn {
+  background-color: purple;
+  color: #fff;
+}
+
+.btn-default {
+    color: #ffffff;
+    background-color: purple;
+    border: none;
+}
+
+.btn-light, .btn-danger, .btn-warning {
+  background-color: #aa2f2f;
+  color: #fff;
+}
+
+.btn-primary, .btn-secondary , .btn-success, .btn-dark, .btn-info{
+  background-color: purple;
+  color: #fff;
+}
+
+.btn-group, .btn-group-toggle {
+  background-color: purple;
+  color: #fff;
+}
+
+.btn:hover, .btn:active, .btn:disabled {
+  background-color: #aa2f2f;
+  color: #fff;
+}
+
+/****************/
+/* Código       */
+/****************/
+
+code {
+    color: purple;
+    background-color:  #ffffff;
+    font-size: 14px;
+}
+
+.navbar{
+  background-color: purple;
+  color: #fff;
+}
+
+.navbar a {
+  color: #fff !important;
+}
+
+.tocify{
+  background-color: purple;
+  color: #fff;
+}
+
+.tocify-header:list-group{
+  background-color: purple;
+  color: #fff;
+}
+
+.tocify-item{
+  background-color: purple;
+  color: #fff;
+}
+.tocify-item:active{
+  background-color: purple;
+  color: #fff;
+}
+
+.tocify-item:hover{
+  background-color: purple;
+  color: #fff;
+}
+.caret {
+  background-color: purple;
+  color: #fff;
+}
+
+.dropdown-menu { 
+  background-color: purple;
+  color: #fff;
+}
+
+.dropdown-menu a {
+  color: #fff !important;  
+}
+
+.dropdown-menu:hover {
+  color: #fff !important;
+}
+
+.dropdown-toggle {
+  background-color: purple;
+  color: #fff;
+}
+
+code {
+    color: gray;
+    background-color: #eee1fc;
+    font-size: 12px;
+}
